@@ -170,8 +170,9 @@ PRODUCT_PACKAGES += \
     LiveWallpapersPicker \
     PhotoTable
 
-# Include librsjni explicitly to workaround GMS issue
+# Include explicitly to work around GMS issues
 PRODUCT_PACKAGES += \
+    libprotobuf-cpp-full \
     librsjni
 
 # Custom CM packages
@@ -188,9 +189,10 @@ PRODUCT_PACKAGES += \
     ExactCalculator \
     LiveLockScreenService \
     WeatherProvider \
-	OmniSwitch \
+    OmniSwitch \
     SoundRecorder \
-    Screencast
+    Screencast \
+    masquerade
 
 # Exchange support
 PRODUCT_PACKAGES += \
@@ -292,7 +294,11 @@ PRODUCT_PROPERTY_OVERRIDES += \
 DEVICE_PACKAGE_OVERLAYS += vendor/cm/overlay/common
 
 PRODUCT_VERSION = 5.8.0
-    CM_VERSION := ResurrectionRemix-N-v$(PRODUCT_VERSION)-$(shell date -u +%Y%m%d)-$(CM_BUILD)
+ifneq ($(RR_BUILDTYPE),)
+CM_VERSION := RR-N-v$(PRODUCT_VERSION)-$(shell date -u +%Y%m%d)-$(CM_BUILD)-$(RR_BUILDTYPE)
+else
+CM_VERSION := RR-N-v$(PRODUCT_VERSION)-$(shell date -u +%Y%m%d)-$(CM_BUILD)
+endif
 
 PRODUCT_PROPERTY_OVERRIDES += \
  ro.rr.version=$(CM_VERSION) \
@@ -301,7 +307,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
  ro.romstats.url=http://resurrectionremix.sourceforge.net/ \
  ro.romstats.name=ResurrectionRemix \
  ro.romstats.version=$(PRODUCT_VERSION) \
- ro.romstats.tframe=7 
+ ro.romstats.tframe=7
 
 ifeq ($(OTA_PACKAGE_SIGNING_KEY),)
     PRODUCT_EXTRA_RECOVERY_KEYS += \
